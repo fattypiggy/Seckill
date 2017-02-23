@@ -4,7 +4,8 @@ import org.seckill.entity.Seckill;
 import org.seckill.entity.SuccessKilled;
 import org.seckill.enums.SeckillStateEnum;
 
-/** 封装秒杀后的结果
+/**
+ * 封装秒杀后的结果
  * Created by williamjing on 2017/2/23.
  */
 public class SeckillExecution {

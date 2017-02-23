@@ -34,5 +34,5 @@ public interface SeckillDao {
      * @param limit
      * @return
      */
-    List<Seckill> queryAll(@Param("offset") int offset, @Param("limit")int limit);
+    List<Seckill> queryAll(@Param("offset") int offset, @Param("limit") int limit);
 }

@@ -22,19 +22,19 @@ public class SuccessKilledDaoTest {
 
     @Test
     public void insertSuccessKilled() throws Exception {
-        long id =1001;
+        long id = 1001;
         long number = 13122090178L;
 
-        int num = successKilledDao.insertSuccessKilled(id,number);
-        System.out.println("updateCount="+num);
+        int num = successKilledDao.insertSuccessKilled(id, number);
+        System.out.println("updateCount=" + num);
     }
 
     @Test
     public void queryByIdWithSeckill() throws Exception {
-        long id =1001;
+        long id = 1001;
         long number = 13122090178L;
 
-        SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(id,number);
+        SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(id, number);
         System.out.println(successKilled);
         System.out.println(successKilled.getSeckill());
     }

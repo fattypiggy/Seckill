@@ -6,34 +6,44 @@
     <update id="reduceNumber">
         <!-- 具体SQL -->
         UPDATE
-          seckill.seckill
+        seckill.seckill
         SET
-          number = number -1
+        number = number -1
         WHERE
-          seckill_id = #{seckillId}
+        seckill_id = #{seckillId}
         AND   <!-- <=不能直接使用 是Mybatis的关键字-->
-          start_time <![CDATA[ <= ]]> #{killTime}
+        start_time <![CDATA[ <= ]]> #{killTime}
         AND
-          end_time >= #{killTime}
+        end_time >= #{killTime}
         AND
-          number > 0
+        number > 0
     </update>
 
     <select id="queryById" resultType="Seckill" parameterType="long">
         SELECT
-          seckill_id,name,number,start_time,end_time,create_time
+        seckill_id,
+        name,
+        number,
+        start_time,
+        end_time,
+        create_time
         FROM
-          seckill.seckill
+        seckill.seckill
         WHERE
-          seckill_id = #{seckillId}
+        seckill_id = #{seckillId}
     </select>
 
     <select id="queryAll" resultType="Seckill">
         SELECT
-          seckill_id,name,number,start_time,end_time,create_time
+        seckill_id,
+        name,
+        number,
+        start_time,
+        end_time,
+        create_time
         FROM
-          seckill.seckill
+        seckill.seckill
         ORDER BY create_time DESC
-        limit #{offset},#{limit}
+        LIMIT #{offset}, #{limit}
     </select>
 </mapper>
