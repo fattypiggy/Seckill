@@ -13,6 +13,9 @@ import org.seckill.exception.SeckillException;
 import org.seckill.service.SeckillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.Date;
@@ -21,10 +24,13 @@ import java.util.List;
 /**
  * Created by williamjing on 2017/2/23.
  */
+@Service
 public class SeckillServiceImpl implements SeckillService {
 
+    @Autowired
     private SeckillDao seckillDao;
 
+    @Autowired
     private SuccessKilledDao successKilledDao;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -67,8 +73,15 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     @Override
+    @Transactional
+    /**
+     * 使用注解控制事物声明的优点
+     * 1：开发团队达成一致约定，明确事物变成风格
+     * 2：能保证事物处理时间尽可能短，b不要穿插网络操作
+     * 3：不是所有方法都需要事务管理
+     */
     public SeckillExecution seckillExecute(long seckillId, long userPhone, String md5) throws RepeatKillException, SeckillCloseException, SeckillException {
-        if (md5 == null || md5 != getMD5(seckillId)) {
+        if (md5 == null || !md5.equals(getMD5(seckillId))) {
             throw new SeckillException("Data was overwrited");
         }
 
