@@ -93,7 +93,7 @@ public class SeckillController {
             result = result = new SeckillResult<SeckillExecution>(false, e.getMessage());
         } catch (SeckillException e) {
             logger.error(e.getMessage());
-            result = result = new SeckillResult<SeckillExecution>(false, e.getMessage());
+            result = new SeckillResult<SeckillExecution>(false, e.getMessage());
         }
         return result;
     }
