@@ -4,6 +4,7 @@ import org.seckill.dto.Exposer;
 import org.seckill.dto.SeckillExecution;
 import org.seckill.dto.SeckillResult;
 import org.seckill.entity.Seckill;
+import org.seckill.enums.SeckillStateEnum;
 import org.seckill.exception.RepeatKillException;
 import org.seckill.exception.SeckillCloseException;
 import org.seckill.exception.SeckillException;
@@ -81,24 +82,25 @@ public class SeckillController {
         if (phone == null) {
             return result = new SeckillResult<SeckillExecution>(false, "未注册用户");
         }
-
         try {
             SeckillExecution seckillExecution = seckillService.seckillExecute(seckillId, phone, md5);
             result = new SeckillResult<SeckillExecution>(true, seckillExecution);
         } catch (RepeatKillException e) {
-            logger.error(e.getMessage());
-            result = result = new SeckillResult<SeckillExecution>(false, e.getMessage());
+            SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStateEnum.REPEAT_KILL);
+            //这边修改为true  是把错误信息直接告诉用户
+            result = new SeckillResult<SeckillExecution>(true, seckillExecution);
         } catch (SeckillCloseException e) {
-            logger.error(e.getMessage());
-            result = result = new SeckillResult<SeckillExecution>(false, e.getMessage());
+            SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStateEnum.SCEKILL_CLOSED);
+            result = new SeckillResult<SeckillExecution>(true, seckillExecution);
         } catch (SeckillException e) {
-            logger.error(e.getMessage());
-            result = new SeckillResult<SeckillExecution>(false, e.getMessage());
+            SeckillExecution seckillExecution = new SeckillExecution(seckillId, SeckillStateEnum.INNER_ERROR);
+            result = new SeckillResult<SeckillExecution>(true, seckillExecution);
         }
         return result;
     }
 
     @RequestMapping(value = "/time/now", method = RequestMethod.GET)
+    @ResponseBody
     public SeckillResult<Long> time() {
         Date date = new Date();
         return new SeckillResult<Long>(true, date.getTime());

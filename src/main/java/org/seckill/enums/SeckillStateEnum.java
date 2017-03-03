@@ -9,7 +9,8 @@ public enum SeckillStateEnum {
     SCEKILL_CLOSED(0, "秒杀关闭"),
     INNER_ERROR(-1, "内部错误"),
     END(-2, "秒杀结束"),
-    DATA_OVERWRITE(-3, " 数据篡改");
+    DATA_OVERWRITE(-3, " 数据篡改"),
+    REPEAT_KILL(4, "重复操作");
 
     private int state;
 
