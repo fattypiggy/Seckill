@@ -94,25 +94,32 @@ public class SeckillServiceImpl implements SeckillService {
             throw new SeckillException("Data was overwrited");
         }
 
+        /**
+         * 这里做了一个优化
+         * 以前执行顺序   减库存->insert->commit(rollback)
+         * 优化后执行顺序 insert->减库存->commit(rollback)
+         * 这样做的好处是能首先过滤一次重复秒杀 后面能更快地释放行级锁 能抗住更高的并发
+         */
         try {
-            //减库存
-            Date now = new Date();
-            int reduceCount = seckillDao.reduceNumber(seckillId, now);
-            if (reduceCount <= 0) {
-                //秒杀结束
-                throw new SeckillCloseException("Seckill is closed");
+            //唯一SeckillId,userPhone
+            int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+            if (insertCount <= 0) {
+                //重复秒杀价
+                throw new RepeatKillException("Seckill repeated");
             } else {
-                //唯一SeckillId,userPhone
-                int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
-                if (insertCount <= 0) {
-                    //重复秒杀价
-                    throw new RepeatKillException("Seckill repeated");
+                //减库存
+                Date now = new Date();
+                int reduceCount = seckillDao.reduceNumber(seckillId, now);
+                if (reduceCount <= 0) {
+                    //秒杀结束
+                    throw new SeckillCloseException("Seckill is closed");
                 } else {
                     //秒杀成功
                     SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS, successKilled);
                 }
             }
+
         } catch (SeckillCloseException e) {
             throw e;
         } catch (RepeatKillException e) {
